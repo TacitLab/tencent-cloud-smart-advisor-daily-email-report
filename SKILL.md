@@ -1,184 +1,124 @@
 ---
 name: tencent-smart-advisor-daily-email-report
-description: 专门用于腾讯智能顾问邮件的日报生成系统。自动读取腾讯智能顾问（email@advisor.cloud.tencent.com）24小时内发送的邮件，智能汇总关键信息，提炼重要决策点和数据变化，对比前一天趋势，生成结构化专业日报。支持自定义检查时间，默认每天早上9点执行。适用于需要监控腾讯智能顾问邮件、跟踪AI建议变化、分析技术趋势的场景。使用此技能当用户需要：1) 腾讯智能顾问邮件的自动化汇总和分析，2) AI建议和技术决策的趋势跟踪，3) 腾讯云服务相关邮件的智能监控。
+description: Generate daily email reports from Tencent Smart Advisor (email@advisor.cloud.tencent.com). Automatically reads emails from the last 24 hours, extracts key information, identifies important decisions and data changes, compares with previous day trends, and generates structured professional reports. Supports customizable check times (default 9 AM daily). Use when users need to (1) automate Tencent Smart Advisor email summarization and analysis, (2) track AI recommendations and technical decision trends, (3) intelligently monitor Tencent Cloud service-related emails.
 ---
 
-# 邮件日报自动生成
+# Tencent Smart Advisor Daily Email Report
 
-## 概述
+Generate structured daily reports from Tencent Smart Advisor emails.
 
-本技能自动连接邮箱，读取指定发件人在24小时内发送的邮件，智能汇总信息，提炼关键内容，对比前一天的变化趋势，并生成结构化的日报。支持完全自定义的检查时间和发件人筛选。
+## Quick Start
 
-## 核心功能
+### 1. Configure Email Connection
 
-### 1. 智能邮件汇总
-- 自动读取24小时内指定发件人的所有邮件
-- 智能去重和主题聚类
-- 按重要性和紧急程度分类
-
-### 2. 关键信息提炼
-- 提取邮件中的核心数据点和关键信息
-- 识别重要决策点和行动项
-- 自动标记需要关注的变化
-
-### 3. 趋势对比分析
-- 对比前一天的邮件内容和数据变化
-- 识别新增、删除和修改的重要信息
-- 生成变化趋势图表（如适用）
-
-### 4. 结构化日报输出
-- 生成包含执行摘要的日报
-- 按主题分类整理信息
-- 提供可操作的建议和下一步行动
-
-## 工作流程
-
-### 步骤1: 配置邮箱连接
 ```bash
-# 设置邮箱认证信息（一次性配置）
-export EMAIL_HOST="imap.exmail.qq.com"  # 或其他IMAP服务器
+# Set environment variables
+export EMAIL_HOST="imap.exmail.qq.com"
 export EMAIL_USER="your-email@company.com"
 export EMAIL_PASS="your-app-password"
-export EMAIL_SENDER="email@advisor.cloud.tencent.com"  # 监控的发件人
+export EMAIL_SENDER="email@advisor.cloud.tencent.com"
 ```
 
-### 步骤2: 执行邮件日报生成
+Or use the interactive setup:
 ```bash
-# 生成昨天的邮件日报（默认9点执行）
+python3 scripts/setup_email.py
+```
+
+### 2. Generate Daily Report
+
+```bash
+# Generate report for last 24 hours
 python3 scripts/email_daily_report.py
 
-# 指定不同时间
-python3 scripts/email_daily_report.py --time "08:00"
-
-# 指定不同发件人
-python3 scripts/email_daily_report.py --sender "other@company.com"
-
-# 指定时间范围（小时）
+# Specify time range
 python3 scripts/email_daily_report.py --hours 48
+
+# Save to file
+python3 scripts/email_daily_report.py --output report.md
 ```
 
-### 步骤3: 设置定时任务
+### 3. Set Up Scheduled Task
+
 ```bash
-# 添加到crontab，每天早上9点执行
-0 9 * * * /usr/bin/python3 /path/to/email-daily-report/scripts/email_daily_report.py >> /var/log/email-report.log 2>&1
+# Add to crontab - runs daily at 9 AM
+0 9 * * * /usr/bin/python3 /path/to/scripts/email_daily_report.py
 ```
 
-## 使用示例
+## Core Features
 
-### 基础使用
-用户："生成昨天的邮件日报"
-助手：运行邮件日报脚本，生成包含以下内容的报告：
-- 邮件总数和发件人统计
-- 主题分类和重要程度分析
-- 关键信息提取和总结
-- 与前一天的变化对比
+- **Smart Email Summarization**: Reads emails from the last 24 hours, deduplicates and clusters topics
+- **Key Information Extraction**: Identifies core data points, decision items, and important changes
+- **Trend Comparison**: Compares with previous day's data, identifies changes and patterns
+- **Structured Report Output**: Generates executive summary with categorized information and actionable recommendations
 
-### 高级配置
-用户："帮我设置每天早上8点检查 advisor 邮件并生成对比分析"
-助手：
-1. 配置邮箱连接参数
-2. 设置定时任务为8点执行
-3. 配置特定发件人筛选
-4. 启用趋势对比分析
-5. 生成定制化日报模板
+## Output Format
 
-### 趋势分析
-用户："分析这周advisor邮件的变化趋势"
-助手：
-1. 读取过去7天的邮件数据
-2. 生成趋势图表和数据对比
-3. 识别重要变化模式
-4. 提供趋势分析和预测建议
+The generated report includes:
+- **Executive Summary**: Email count, important items, urgent matters
+- **Trend Analysis**: Day-over-day changes, new topics
+- **Detailed Content**: Important decisions, urgent items, data points by category
+- **Action Recommendations**: Prioritized next steps
 
-## 输出格式
+## Scripts Reference
 
-生成的日报包含以下结构化内容：
+- **`scripts/email_daily_report.py`**: Main script for generating daily reports
+- **`scripts/trend_analyzer.py`**: Weekly trend analysis and insights
+- **`scripts/setup_email.py`**: Interactive configuration wizard
 
-```markdown
-# 邮件日报 - 2026年2月24日
+## Email Configuration
 
-## 📊 执行摘要
-- 新邮件：12封（+3封 vs 昨日）
-- 重要邮件：3封（包含关键决策信息）
-- 紧急事项：1封（需要立即处理）
+For detailed email provider setup, authentication, and troubleshooting, see [references/email_configuration.md](references/email_configuration.md).
 
-## 📈 趋势分析
-- 邮件总量：↑ 15% vs 昨日
-- 重要信息：↑ 20% vs 昨日
-- 新主题：AI基础设施规划、成本控制
+### Supported Providers
 
-## 📋 详细内容
+| Provider | IMAP Server | Notes |
+|----------|-------------|-------|
+| Tencent Exmail | `imap.exmail.qq.com` | Recommended for enterprise |
+| QQ Mail | `imap.qq.com` | Enable IMAP first |
+| Gmail | `imap.gmail.com` | Use app-specific password |
+| Outlook | `imap-mail.outlook.com` | Microsoft ecosystem |
 
-### 🎯 重要决策
-1. **Q1预算调整** - 涉及AI项目资金重新分配
-2. **团队扩张计划** - 新增3个技术岗位
-3. **产品路线图更新** - Q2重点转向企业客户
+### Environment Variables
 
-### ⚡ 紧急事项
-- **系统升级通知** - 本周五22:00-24:00系统维护
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `EMAIL_HOST` | IMAP server address | `imap.exmail.qq.com` |
+| `EMAIL_USER` | Email address | Required |
+| `EMAIL_PASS` | App-specific password | Required |
+| `EMAIL_SENDER` | Sender to monitor | `email@advisor.cloud.tencent.com` |
+| `EMAIL_HOURS` | Lookback period | `24` |
 
-### 📊 数据变化
-- 用户增长：+5.2%（符合预期）
-- 收入预测：上调8%（基于新客户签约）
-- 成本分析：云费用增长12%（需要优化）
+## Usage Examples
 
-## 🎯 行动建议
-1. **优先级高**：准备Q1预算调整方案
-2. **本周内**：完成团队招聘需求梳理
-3. **关注**：周五系统升级影响评估
-```
+### Basic Usage
+User: "Generate yesterday's email report"
+- Run email_daily_report.py
+- Produce structured report with summary, trends, and recommendations
 
-## 脚本使用
+### Advanced Configuration
+User: "Set up daily 8 AM check for advisor emails with trend analysis"
+1. Run setup_email.py for interactive configuration
+2. Set check time to 08:00
+3. Configure specific sender filtering
+4. Enable trend analysis
+5. Set up cron job
 
-### 主要脚本：`scripts/email_daily_report.py`
-- 自动邮箱连接和认证
-- 邮件内容解析和分类
-- 关键信息提取算法
-- 趋势对比和变化分析
-- 结构化报告生成
+### Weekly Trend Analysis
+User: "Analyze this week's advisor email trends"
+1. Load past 7 days of email data
+2. Generate trend charts and comparisons
+3. Identify important change patterns
+4. Provide trend analysis and predictions
 
-### 辅助脚本：`scripts/trend_analyzer.py`
-- 历史数据对比分析
-- 趋势图表生成
-- 变化模式识别
-- 预测算法实现
+## Error Handling
 
-### 配置脚本：`scripts/setup_email.py`
-- 邮箱连接测试
-- 认证信息验证
-- 定时任务配置
-- 环境变量设置
+Common issues and solutions:
 
-## 错误处理
+| Issue | Solution |
+|-------|----------|
+| Authentication failed | Check app-specific password, verify IMAP enabled |
+| Connection timeout | Verify IMAP server address and port 993 |
+| Parse errors | Check email encoding format |
+| Permission denied | Ensure script has file read/write permissions |
 
-常见问题和解决方案：
-
-1. **认证失败**：检查邮箱密码和应用专用密码设置
-2. **连接超时**：确认IMAP服务器地址和端口
-3. **解析错误**：检查邮件格式编码
-4. **权限问题**：确保脚本有文件读写权限
-
-## 扩展功能
-
-### 多邮箱支持
-可以同时监控多个发件人的邮件，分别生成专项报告。
-
-### 智能分类
-基于机器学习自动分类邮件主题和重要性。
-
-### 图表可视化
-生成趋势图表和数据可视化报告。
-
-### 集成通知
-将日报发送到指定渠道（Slack、Teams等）。
-
-## 技术实现
-
-基于 Python 的邮件处理库：
-- `imaplib`：IMAP协议连接
-- `email`：邮件内容解析
-- `pandas`：数据处理和分析
-- `matplotlib`：图表生成
-- `schedule`：定时任务
-
-支持主流邮箱服务商：QQ邮箱、腾讯企业邮、Gmail、Outlook等。
+For detailed troubleshooting, see [references/email_configuration.md](references/email_configuration.md).

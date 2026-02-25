@@ -1,153 +1,155 @@
-# 邮箱配置参考指南
+# Email Configuration Reference
 
-## 支持的邮箱服务商
+Detailed guide for configuring email providers and troubleshooting.
 
-### 1. 腾讯企业邮 (推荐)
-- **IMAP服务器**: `imap.exmail.qq.com`
-- **端口**: 993 (SSL)
-- **SMTP服务器**: `smtp.exmail.qq.com`
-- **端口**: 465 (SSL) 或 587 (TLS)
-- **特点**: 稳定、安全、适合企业使用
+## Supported Email Providers
 
-### 2. QQ邮箱
-- **IMAP服务器**: `imap.qq.com`
-- **端口**: 993 (SSL)
-- **特点**: 个人用户友好，需要开启IMAP服务
+### Tencent Exmail (Recommended)
+- **IMAP Server**: `imap.exmail.qq.com`
+- **Port**: 993 (SSL)
+- **SMTP Server**: `smtp.exmail.qq.com`
+- **Ports**: 465 (SSL) or 587 (TLS)
+- **Best for**: Enterprise users, stable and secure
 
-### 3. Gmail
-- **IMAP服务器**: `imap.gmail.com`
-- **端口**: 993 (SSL)
-- **特点**: 需要应用专用密码，两步验证用户必须使用
+### QQ Mail
+- **IMAP Server**: `imap.qq.com`
+- **Port**: 993 (SSL)
+- **Note**: Enable IMAP service in settings first
 
-### 4. Outlook/Hotmail
-- **IMAP服务器**: `imap-mail.outlook.com`
-- **端口**: 993 (SSL)
-- **特点**: Microsoft生态，良好的企业支持
+### Gmail
+- **IMAP Server**: `imap.gmail.com`
+- **Port**: 993 (SSL)
+- **Note**: Requires app-specific password with 2FA enabled
 
-## 安全配置
+### Outlook/Hotmail
+- **IMAP Server**: `imap-mail.outlook.com`
+- **Port**: 993 (SSL)
+- **Best for**: Microsoft ecosystem integration
 
-### 应用专用密码 (推荐)
+## Security Configuration
+
+### App-Specific Passwords (Recommended)
 
 #### Gmail
-1. 开启两步验证
-2. 访问：https://myaccount.google.com/apppasswords
-3. 生成应用专用密码
-4. 在配置中使用生成的密码
+1. Enable 2-factor authentication
+2. Visit: https://myaccount.google.com/apppasswords
+3. Generate app-specific password
+4. Use generated password in configuration
 
-#### QQ邮箱/腾讯企业邮
-1. 登录邮箱设置
-2. 开启IMAP/SMTP服务
-3. 生成授权码
-4. 使用授权码作为密码
+#### Tencent Exmail / QQ Mail
+1. Login to email settings
+2. Enable IMAP/SMTP service
+3. Generate authorization code
+4. Use authorization code as password
 
 #### Outlook
-1. 开启两步验证
-2. 访问：https://account.microsoft.com/security
-3. 生成应用密码
-4. 使用生成的密码
+1. Enable 2-factor authentication
+2. Visit: https://account.microsoft.com/security
+3. Generate app password
+4. Use generated password
 
-### 环境变量配置
+### Environment Variables
 
 ```bash
-# IMAP服务器配置
+# IMAP Server Configuration
 export EMAIL_HOST="imap.exmail.qq.com"
 export EMAIL_USER="your-email@company.com"
 export EMAIL_PASS="your-app-password"
 
-# 监控配置
+# Monitoring Configuration
 export EMAIL_SENDER="email@advisor.cloud.tencent.com"
 export EMAIL_HOURS="24"
 ```
 
-## 常见问题排查
+## Troubleshooting
 
-### 连接失败
+### Connection Failures
 
-**症状**: `imaplib.IMAP4.error: [AUTHENTICATIONFAILED] Invalid credentials`
+**Symptom**: `imaplib.IMAP4.error: [AUTHENTICATIONFAILED] Invalid credentials`
 
-**解决方案**:
-1. 检查用户名和密码是否正确
-2. 确认是否使用了应用专用密码
-3. 验证IMAP服务是否已开启
-4. 检查网络连接和防火墙设置
+**Solutions**:
+1. Verify username and password are correct
+2. Confirm using app-specific password (not main password)
+3. Verify IMAP service is enabled
+4. Check network connectivity and firewall settings
 
-**症状**: `Connection refused` 或 `Timeout`
+**Symptom**: `Connection refused` or `Timeout`
 
-**解决方案**:
-1. 检查IMAP服务器地址是否正确
-2. 确认端口993是否开放
-3. 检查防火墙和网络设置
-4. 尝试使用不同的网络环境
+**Solutions**:
+1. Verify IMAP server address is correct
+2. Confirm port 993 is open
+3. Check firewall and network settings
+4. Try different network environment
 
-### 认证问题
+### Authentication Issues
 
-**症状**: `Invalid credentials` 但密码正确
+**Symptom**: `Invalid credentials` but password is correct
 
-**解决方案**:
-1. 确认是否开启了两步验证
-2. 检查是否使用了正确的应用专用密码
-3. 验证账户是否有IMAP访问权限
-4. 检查账户是否被锁定或限制
+**Solutions**:
+1. Confirm 2-factor authentication is enabled
+2. Verify correct app-specific password is used
+3. Check account has IMAP access permission
+4. Verify account is not locked or restricted
 
-### 搜索问题
+### Search Issues
 
-**症状**: 搜索不到邮件或结果不完整
+**Symptom**: No emails found or incomplete results
 
-**解决方案**:
-1. 检查搜索条件语法是否正确
-2. 确认时间范围设置合理
-3. 验证发件人地址是否完全匹配
-4. 检查邮箱是否有足够的邮件数量
+**Solutions**:
+1. Check search criteria syntax is correct
+2. Confirm time range settings are reasonable
+3. Verify sender address matches exactly
+4. Check mailbox has sufficient email volume
 
-## 性能优化
+## Performance Optimization
 
-### 连接池
-- 重用IMAP连接减少开销
-- 合理设置连接超时时间
-- 使用连接池管理多个邮箱
+### Connection Pooling
+- Reuse IMAP connections to reduce overhead
+- Set reasonable connection timeouts
+- Use connection pools for multiple mailboxes
 
-### 搜索优化
-- 使用精确的时间范围
-- 避免全邮箱搜索
-- 合理使用搜索条件组合
+### Search Optimization
+- Use precise time ranges
+- Avoid full mailbox searches
+- Use combined search criteria effectively
 
-### 数据缓存
-- 缓存常用的邮箱信息
-- 本地存储历史数据
-- 定期清理过期缓存
+### Data Caching
+- Cache frequently used mailbox info
+- Store historical data locally
+- Clean up expired cache regularly
 
-## 安全最佳实践
+## Security Best Practices
 
-### 密码管理
-- 始终使用应用专用密码
-- 定期更换密码
-- 不要在代码中硬编码密码
-- 使用环境变量存储敏感信息
+### Password Management
+- Always use app-specific passwords
+- Rotate passwords regularly
+- Never hardcode passwords in code
+- Use environment variables for sensitive data
 
-### 网络连接
-- 始终使用SSL/TLS加密
-- 验证服务器证书
-- 避免在公共网络传输敏感信息
+### Network Security
+- Always use SSL/TLS encryption
+- Verify server certificates
+- Avoid transmitting sensitive info on public networks
 
-### 数据保护
-- 本地加密存储敏感数据
-- 定期清理临时文件
-- 限制数据访问权限
-- 遵守数据保护法规
+### Data Protection
+- Encrypt sensitive data stored locally
+- Clean up temporary files regularly
+- Restrict data access permissions
+- Comply with data protection regulations
 
-## 监控和维护
+## Monitoring and Maintenance
 
-### 健康检查
-- 定期检查邮箱连接状态
-- 监控认证失败率
-- 跟踪搜索性能指标
+### Health Checks
+- Regularly check mailbox connection status
+- Monitor authentication failure rates
+- Track search performance metrics
 
-### 日志记录
-- 记录所有连接和操作
-- 监控错误和异常情况
-- 定期分析日志数据
+### Logging
+- Log all connections and operations
+- Monitor errors and exceptions
+- Analyze log data regularly
 
-### 备份策略
-- 定期备份配置文件
-- 保存重要的历史数据
-- 建立灾难恢复计划
+### Backup Strategy
+- Regularly backup configuration files
+- Save important historical data
+- Establish disaster recovery plan

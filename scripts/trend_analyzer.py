@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 """
-趋势分析器 - 用于分析邮件数据的历史趋势和变化模式
+Trend Analyzer - For analyzing historical email data trends and patterns
 """
 
 import json
 import os
 from datetime import datetime, timedelta
 from typing import Dict, List
-import matplotlib.pyplot as plt
-import pandas as pd
 from collections import Counter
 import numpy as np
 
@@ -21,8 +19,7 @@ class TrendAnalyzer:
         os.makedirs(data_dir, exist_ok=True)
     
     def analyze_weekly_trends(self, current_data: Dict) -> Dict:
-        """分析周趋势"""
-        # 加载历史数据
+        """Analyze weekly trends"""
         history = self.load_history()
         
         if not history:
@@ -33,7 +30,6 @@ class TrendAnalyzer:
                 'prediction': 'insufficient_data'
             }
         
-        # 分析7天趋势
         weekly_analysis = {
             'email_volume_trend': self.analyze_volume_trend(history, days=7),
             'keyword_trends': self.analyze_keyword_trends(history, days=7),
@@ -44,17 +40,15 @@ class TrendAnalyzer:
         return weekly_analysis
     
     def analyze_volume_trend(self, history: List[Dict], days: int = 7) -> Dict:
-        """分析邮件数量趋势"""
+        """Analyze email volume trend"""
         if len(history) < 2:
             return {'trend': 'stable', 'change_rate': 0}
         
-        # 获取最近几天的邮件数量
         recent_volumes = [day.get('total_emails', 0) for day in history[-days:]]
         
         if len(recent_volumes) < 2:
             return {'trend': 'stable', 'change_rate': 0}
         
-        # 计算变化率
         change_rate = 0
         if len(recent_volumes) >= 2:
             latest = recent_volumes[-1]
@@ -62,7 +56,6 @@ class TrendAnalyzer:
             if previous > 0:
                 change_rate = ((latest - previous) / previous) * 100
         
-        # 判断趋势
         if abs(change_rate) < 5:
             trend = 'stable'
         elif change_rate > 20:
@@ -81,26 +74,23 @@ class TrendAnalyzer:
         }
     
     def analyze_keyword_trends(self, history: List[Dict], days: int = 7) -> List[Dict]:
-        """分析关键词趋势"""
+        """Analyze keyword trends"""
         if len(history) < 2:
             return []
         
-        # 提取最近和之前的关键词
         recent_keywords = []
         previous_keywords = []
         
         for i, day_data in enumerate(history[-days:]):
             keywords = day_data.get('keywords', [])
-            if i >= days - 3:  # 最近3天
+            if i >= days - 3:
                 recent_keywords.extend(keywords)
             else:
                 previous_keywords.extend(keywords)
         
-        # 计算关键词频率
         recent_counter = Counter(recent_keywords)
         previous_counter = Counter(previous_keywords)
         
-        # 找出新兴关键词
         trending_keywords = []
         for keyword, recent_count in recent_counter.items():
             previous_count = previous_counter.get(keyword, 0)
@@ -112,7 +102,6 @@ class TrendAnalyzer:
                     'trend': 'emerging'
                 })
         
-        # 找出衰退关键词
         declining_keywords = []
         for keyword, previous_count in previous_counter.items():
             recent_count = recent_counter.get(keyword, 0)
@@ -127,7 +116,7 @@ class TrendAnalyzer:
         return trending_keywords + declining_keywords
     
     def analyze_importance_trends(self, history: List[Dict], days: int = 7) -> Dict:
-        """分析重要性趋势"""
+        """Analyze importance trends"""
         if len(history) < 2:
             return {'trend': 'stable'}
         
@@ -136,7 +125,6 @@ class TrendAnalyzer:
             importance_dist = day_data.get('by_importance', {})
             recent_importance.append(importance_dist)
         
-        # 计算高重要性邮件比例趋势
         high_importance_ratios = []
         for imp_dist in recent_importance:
             total = sum(imp_dist.values())
@@ -147,7 +135,6 @@ class TrendAnalyzer:
         if len(high_importance_ratios) < 2:
             return {'trend': 'stable'}
         
-        # 判断趋势
         latest_ratio = high_importance_ratios[-1]
         avg_ratio = np.mean(high_importance_ratios[:-1])
         
@@ -166,7 +153,7 @@ class TrendAnalyzer:
         }
     
     def analyze_category_trends(self, history: List[Dict], days: int = 7) -> Dict:
-        """分析分类趋势"""
+        """Analyze category trends"""
         if len(history) < 2:
             return {'trend': 'stable'}
         
@@ -175,7 +162,6 @@ class TrendAnalyzer:
             cat_dist = day_data.get('by_category', {})
             recent_categories.append(cat_dist)
         
-        # 分析各分类的变化
         category_trends = {}
         categories = ['decisions', 'updates', 'alerts', 'general']
         
@@ -206,34 +192,31 @@ class TrendAnalyzer:
         return category_trends
     
     def generate_trend_insights(self, analysis: Dict) -> List[str]:
-        """生成趋势洞察"""
+        """Generate trend insights"""
         insights = []
         
-        # 邮件数量趋势洞察
         volume_trend = analysis.get('email_volume_trend', {})
         if volume_trend.get('change_rate', 0) > 20:
-            insights.append(f"📈 邮件数量显著增长（+{volume_trend['change_rate']:.1f}%），建议关注邮件管理效率")
+            insights.append(f"📈 Email volume significantly increased (+{volume_trend['change_rate']:.1f}%), consider optimizing email management")
         elif volume_trend.get('change_rate', 0) < -20:
-            insights.append(f"📉 邮件数量显著下降（{volume_trend['change_rate']:.1f}%），可能反映业务活动变化")
+            insights.append(f"📉 Email volume significantly decreased ({volume_trend['change_rate']:.1f}%), may reflect business activity changes")
         
-        # 重要性趋势洞察
         importance_trend = analysis.get('importance_trends', {})
         if importance_trend.get('trend') == 'increasing_importance':
-            insights.append("⚠️ 高重要性邮件比例上升，建议优先处理重要事项")
+            insights.append("⚠️ High-importance email ratio increased, prioritize important items")
         elif importance_trend.get('trend') == 'decreasing_importance':
-            insights.append("✅ 高重要性邮件比例下降，整体邮件压力减轻")
+            insights.append("✅ High-importance email ratio decreased, overall email pressure reduced")
         
-        # 关键词趋势洞察
         keyword_trends = analysis.get('keyword_trends', [])
         emerging_keywords = [kw for kw in keyword_trends if kw.get('trend') == 'emerging']
         if emerging_keywords:
             top_keywords = [kw['keyword'] for kw in emerging_keywords[:3]]
-            insights.append(f"🔍 新兴关键词：{', '.join(top_keywords)} - 反映当前关注热点")
+            insights.append(f"🔍 Emerging keywords: {', '.join(top_keywords)} - reflecting current focus areas")
         
         return insights
     
     def load_history(self) -> List[Dict]:
-        """加载历史数据"""
+        """Load historical data"""
         if not os.path.exists(self.history_file):
             return []
         
@@ -241,65 +224,60 @@ class TrendAnalyzer:
             with open(self.history_file, 'r', encoding='utf-8') as f:
                 return json.load(f)
         except Exception as e:
-            print(f"加载历史数据失败: {e}")
+            print(f"Failed to load history: {e}")
             return []
     
     def generate_weekly_report(self, current_data: Dict) -> str:
-        """生成周趋势报告"""
+        """Generate weekly trend report"""
         weekly_analysis = self.analyze_weekly_trends(current_data)
         
-        report = f"""# 周趋势分析报告 - {datetime.now().strftime('%Y年%m月%d日')}
+        report = f"""# Weekly Trend Analysis Report - {datetime.now().strftime('%Y-%m-%d')}
 
-## 📊 本周邮件趋势概览
+## Weekly Email Trend Overview
 
-### 📈 邮件数量趋势
-- 趋势状态：{weekly_analysis.get('email_volume_trend', {}).get('trend', 'unknown')}
-- 变化率：{weekly_analysis.get('email_volume_trend', {}).get('change_rate', 0):.1f}%
-- 最近数量：{weekly_analysis.get('email_volume_trend', {}).get('recent_volumes', [])[-3:]}
+### Email Volume Trend
+- Trend status: {weekly_analysis.get('email_volume_trend', {}).get('trend', 'unknown')}
+- Change rate: {weekly_analysis.get('email_volume_trend', {}).get('change_rate', 0):.1f}%
+- Recent volumes: {weekly_analysis.get('email_volume_trend', {}).get('recent_volumes', [])[-3:]}
 
-### 🔑 关键词趋势
+### Keyword Trends
 """
         
         keyword_trends = weekly_analysis.get('keyword_trends', [])
         if keyword_trends:
             for trend in keyword_trends[:5]:
-                report += f"- **{trend['keyword']}**: {trend['trend']} (最近：{trend['recent_count']}，之前：{trend['previous_count']})\n"
+                report += f"- **{trend['keyword']}**: {trend['trend']} (recent: {trend['recent_count']}, previous: {trend['previous_count']})\n"
         else:
-            report += "- 本周关键词趋势相对稳定\n"
+            report += "- Keyword trends relatively stable this week\n"
         
         report += f"""
+### Importance Trend
+- High-importance email trend: {weekly_analysis.get('importance_trends', {}).get('trend', 'unknown')}
+- Current ratio: {weekly_analysis.get('importance_trends', {}).get('latest_ratio', 0):.1f}%
+- Average ratio: {weekly_analysis.get('importance_trends', {}).get('average_ratio', 0):.1f}%
 
-### 📊 重要性趋势
-- 高重要性邮件趋势：{weekly_analysis.get('importance_trends', {}).get('trend', 'unknown')}
-- 当前比例：{weekly_analysis.get('importance_trends', {}).get('latest_ratio', 0):.1f}%
-- 平均比例：{weekly_analysis.get('importance_trends', {}).get('average_ratio', 0):.1f}%
-
-### 📂 分类趋势
+### Category Trends
 """
         
         category_trends = weekly_analysis.get('category_trends', {})
         for category, trend_data in category_trends.items():
-            report += f"- **{category}**: {trend_data['trend']} (当前：{trend_data['latest_count']}，平均：{trend_data['previous_average']:.1f})\n"
+            report += f"- **{category}**: {trend_data['trend']} (current: {trend_data['latest_count']}, avg: {trend_data['previous_average']:.1f})\n"
         
-        # 生成洞察
         insights = self.generate_trend_insights(weekly_analysis)
         if insights:
-            report += f"""
-
-## 💡 趋势洞察
+            report += """
+## Trend Insights
 """
             for insight in insights:
                 report += f"- {insight}\n"
         
-        report += "\n---\n*报告由邮件日报系统自动生成*"
+        report += "\n---\n*Report generated by Email Daily Report System*"
         
         return report
 
-# 使用示例
 if __name__ == '__main__':
     analyzer = TrendAnalyzer('/tmp/email_data')
     
-    # 示例当前数据
     current_data = {
         'total_emails': 15,
         'by_importance': {'high': 3, 'medium': 8, 'low': 4},
@@ -308,6 +286,5 @@ if __name__ == '__main__':
         'date': datetime.now().isoformat()
     }
     
-    # 生成周趋势报告
     report = analyzer.generate_weekly_report(current_data)
     print(report)
