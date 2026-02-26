@@ -140,6 +140,31 @@ echo "$EMAILS_JSON" | jq -c '.[]' | while read -r email; do
     APPID="unknown"
   fi
   
+  # Extract account name from content (for accounts.json auto-update)
+  ACCOUNT_NAME=""
+  # Try different patterns for account name
+  if echo "$EMAIL_CONTENT" | grep -q '账号名称'; then
+    ACCOUNT_NAME=$(echo "$EMAIL_CONTENT" | grep -oP '账号名称\s*[：:]\s*\K[^<\n]+' | head -1 | sed 's/[[:space:]]*$//')
+  elif echo "$EMAIL_CONTENT" | grep -q '名称.*腾讯'; then
+    ACCOUNT_NAME=$(echo "$EMAIL_CONTENT" | grep -oP '名称\s*[：:]\s*\K[^<\n]+' | head -1 | sed 's/[[:space:]]*$//')
+  fi
+  
+  # Update accounts.json if we found a name and APPID is not already present
+  if [[ -n "$ACCOUNT_NAME" && "$APPID" != "unknown" ]]; then
+    ACCOUNTS_FILE="${CACHE_DIR}/accounts.json"
+    if [[ ! -f "$ACCOUNTS_FILE" ]]; then
+      echo "{}" > "$ACCOUNTS_FILE"
+    fi
+    # Only add if not already exists (preserve manual edits)
+    CURRENT_NAME=$(jq -r ".[\"${APPID}\"] // empty" "$ACCOUNTS_FILE" 2>/dev/null)
+    if [[ -z "$CURRENT_NAME" ]]; then
+      TMP_ACCOUNTS=$(mktemp)
+      jq ".[\"${APPID}\"] = \"${ACCOUNT_NAME}\"" "$ACCOUNTS_FILE" > "$TMP_ACCOUNTS"
+      mv "$TMP_ACCOUNTS" "$ACCOUNTS_FILE"
+      echo "     └─ Updated accounts.json: ${APPID} -> ${ACCOUNT_NAME}"
+    fi
+  fi
+  
   # Create cache directories
   CACHE_PATH="${CACHE_DIR}/raw/${APPID}/${EMAIL_DATE}/${ARCHITECTURE}"
   mkdir -p "$CACHE_PATH/attachments"

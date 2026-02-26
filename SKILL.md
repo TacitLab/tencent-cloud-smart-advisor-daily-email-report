@@ -364,16 +364,26 @@ rm -rf ~/.advisor/raw/*
 ./scripts/advisor-sync.sh --since-hours 168
 ```
 
-### Missing Account Names
+### Account Name Mapping
 
-Edit `~/.advisor/accounts.json`:
+The system automatically extracts account names from email content and updates `~/.advisor/accounts.json` during sync. If an APPID already has a mapped name, it will **not** be overwritten (preserving manual edits).
 
+To manually add or override account names:
+
+```bash
+# Edit the accounts.json file
+nano ~/.advisor/accounts.json
+```
+
+Format:
 ```json
 {
   "1312346585": "深圳市腾讯计算机系统有限公司",
   "other-appid": "Account Display Name"
 }
 ```
+
+The account name is displayed in reports instead of the numeric APPID for better readability.
 
 ---
 
