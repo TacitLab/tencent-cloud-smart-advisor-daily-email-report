@@ -48,7 +48,7 @@ Emails and attachments are stored in a hierarchical structure:
 ├── index.json                    # Email metadata index (for deduplication)
 ├── accounts.json                 # Account name mappings
 ├── reports/                      # Processed reports
-│   └── 1312346585/              # APPID
+│   └── 1234567890/              # APPID
 │       └── 2026-02-25/          # Date
 │           ├── arch-nff1ftst/   # Architecture diagram
 │           │   ├── risk-report.json
@@ -56,13 +56,13 @@ Emails and attachments are stored in a hierarchical structure:
 │           │   └── capacity-report.json
 │           └── daily-summary.md
 ├── raw/                          # Raw email content
-│   └── 1312346585/
+│   └── 1234567890/
 │       └── 2026-02-25/
 │           ├── 3120-content.txt
 │           ├── 3120-meta.json
 │           └── attachments/
 └── compare/                      # Period comparison cache
-    └── 1312346585/
+    └── 1234567890/
         └── arch-nff1ftst/
             ├── prev-date.txt
             └── diff.json
@@ -85,7 +85,7 @@ Emails and attachments are stored in a hierarchical structure:
 ### Generate Report for Specific Account
 
 ```bash
-./scripts/advisor-report.sh --appid 1312346585 --today
+./scripts/advisor-report.sh --appid 1234567890 --today
 ```
 
 ### Force Refresh (Ignore Cache)
@@ -167,7 +167,7 @@ The system uses the `summarize` tool to extract content from Excel attachments:
 
 ```bash
 # Parse Excel attachments using summarize
-summarize ~/.advisor/raw/1312346585/2026-02-25/attachments/*.xlsx --json
+summarize ~/.advisor/raw/1234567890/2026-02-25/attachments/*.xlsx --json
 ```
 
 ### Step 3: Generate Structured Report
@@ -175,7 +175,7 @@ summarize ~/.advisor/raw/1312346585/2026-02-25/attachments/*.xlsx --json
 ```bash
 # Generate per-account/architecture reports
 ./scripts/generate-report.sh \
-  --appid 1312346585 \
+  --appid 1234567890 \
   --date 2026-02-25 \
   --cache-dir ~/.advisor \
   --output-format markdown
@@ -193,7 +193,7 @@ summarize ~/.advisor/raw/1312346585/2026-02-25/attachments/*.xlsx --json
 ```markdown
 # 📊 腾讯云智能顾问日报 | 2026-02-25
 
-## 账号概览: 1312346585 (深圳市腾讯计算机系统有限公司)
+## 账号概览: 1234567890 (深圳市腾讯计算机系统有限公司)
 
 ### 架构图: arch-nff1ftst (游戏行业架构图)
 
@@ -289,7 +289,7 @@ When `--compare` is enabled, the report includes:
     "3120": {
       "messageId": "<abc123@tencent.com>",
       "subject": "腾讯云智能顾问(TSA)-架构风险治理报告-arch-nff1ftst",
-      "appId": "1312346585",
+      "appId": "1234567890",
       "accountName": "深圳市腾讯计算机系统有限公司",
       "reportType": "risk",
       "architecture": "arch-nff1ftst",
@@ -356,7 +356,7 @@ Run at 09:00 daily:
 
 ```bash
 # Clear cache for specific date and re-sync
-rm -rf ~/.advisor/raw/1312346585/2026-02-25
+rm -rf ~/.advisor/raw/1234567890/2026-02-25
 ./scripts/advisor-sync.sh --since-hours 48
 
 # Or clear all raw cache and re-sync from scratch
@@ -378,7 +378,7 @@ nano ~/.advisor/accounts.json
 Format:
 ```json
 {
-  "1312346585": "深圳市腾讯计算机系统有限公司",
+  "1234567890": "深圳市腾讯计算机系统有限公司",
   "other-appid": "Account Display Name"
 }
 ```
