@@ -147,16 +147,19 @@ Options:
 # Create cache directory
 mkdir -p ~/.advisor/{raw,reports,compare}
 
-# Fetch and parse emails
-himalaya envelope list from:email@advisor.cloud.tencent.com --output json | \
-  ./scripts/parse-and-cache.sh
+# Sync emails from last 24 hours
+./scripts/advisor-sync.sh --since-hours 24
+
+# Or sync with dry-run to preview
+./scripts/advisor-sync.sh --since-hours 24 --dry-run
 ```
 
-The `parse-and-cache.sh` script:
-1. Parses email subject to extract APPID, report type, architecture name
-2. Checks index.json for duplicates (by message-id)
-3. Downloads email content and attachments to appropriate cache directory
-4. Updates index.json with metadata
+The `advisor-sync.sh` script:
+1. Fetches emails from `email@advisor.cloud.tencent.com`
+2. Parses email subject to extract APPID, report type, architecture name
+3. Checks index.json for duplicates (by message-id)
+4. Downloads email content and attachments to appropriate cache directory
+5. Updates index.json with metadata
 
 ### Step 2: Parse Cached Data
 
@@ -171,11 +174,14 @@ summarize ~/.advisor/raw/1312346585/2026-02-25/attachments/*.xlsx --json
 
 ```bash
 # Generate per-account/architecture reports
-python3 ./scripts/generate-report.py \
+./scripts/generate-report.sh \
   --appid 1312346585 \
   --date 2026-02-25 \
   --cache-dir ~/.advisor \
   --output-format markdown
+
+# Or use the main orchestrator to generate all reports
+./scripts/advisor-report.sh --date 2026-02-25
 ```
 
 ---
@@ -306,10 +312,7 @@ When `--compare` is enabled, the report includes:
 2. **Fallback**: Subject + Date + APPID combination
 3. **Update Strategy**: If same report type for same account/architecture on same date, keep latest
 
-```bash
-# Check if email already cached
-./scripts/check-duplicate.sh <message-id>
-```
+The deduplication is handled automatically by `advisor-sync.sh` via the `index.json` file.
 
 ---
 
@@ -352,11 +355,13 @@ Run at 09:00 daily:
 ### Cache Corruption
 
 ```bash
-# Rebuild index from cached files
-./scripts/rebuild-index.sh
-
-# Clear cache for specific date
+# Clear cache for specific date and re-sync
 rm -rf ~/.advisor/raw/1312346585/2026-02-25
+./scripts/advisor-sync.sh --since-hours 48
+
+# Or clear all raw cache and re-sync from scratch
+rm -rf ~/.advisor/raw/*
+./scripts/advisor-sync.sh --since-hours 168
 ```
 
 ### Missing Account Names
