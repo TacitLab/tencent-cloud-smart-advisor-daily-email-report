@@ -1,9 +1,9 @@
 ---
-name: tencent-smart-advisor-daily-email-report
-description: Generate intelligent daily reports from Tencent Smart Advisor emails using Skill composition. Orchestrates himalaya (email), summarize (content analysis), and LLM reasoning to produce insights. Supports multi-account/architecture report grouping, local caching with deduplication, and period-over-period comparison.
+name: tencent-cloud-smart-advisor-daily-email-report
+description: Generate intelligent daily reports from Tencent Cloud Smart Advisor emails using Skill composition. Orchestrates himalaya (email), summarize (content analysis), and LLM reasoning to produce insights. Supports multi-account/architecture report grouping, local caching with deduplication, and period-over-period comparison.
 metadata:
   openclaw:
-    emoji: 📊
+    emoji: 🐦‍🔥
     requires:
       skills:
         - himalaya
@@ -14,9 +14,9 @@ metadata:
         - summarize
 ---
 
-# Tencent Smart Advisor Daily Report
+# Tencent Cloud Smart Advisor Daily Report
 
-**Orchestration Skill** — This skill composes specialized skills (`himalaya`, `summarize`) to generate intelligent reports from Tencent Smart Advisor emails, with support for:
+**Orchestration Skill** — This skill composes specialized skills (`himalaya`, `summarize`) to generate intelligent reports from Tencent Cloud Smart Advisor emails, with support for:
 
 - **Multi-account/Architecture Grouping** — Reports organized by APPID and architecture diagram
 - **Local Caching with Deduplication** — Emails stored in `~/.advisor` with automatic dedup
@@ -337,7 +337,7 @@ The deduplication is handled automatically by `advisor-sync.sh` via the `index.j
 Add to `HEARTBEAT.md`:
 
 ```markdown
-## Tencent Smart Advisor Daily Check
+## Tencent Cloud Smart Advisor Daily Check
 
 Run at 09:00 daily:
 
@@ -391,7 +391,7 @@ The account name is displayed in reports instead of the numeric APPID for better
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│           Tencent Smart Advisor Report Skill                    │
+│           Tencent Cloud Smart Advisor Report Skill                │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  ┌─────────────┐     ┌─────────────┐     ┌─────────────────┐   │

@@ -1,10 +1,10 @@
-# Tencent Smart Advisor Daily Email Report
+# Tencent Cloud Smart Advisor Daily Email Report
 
-**English** | [中文](README.zh-CN.md)
+[English](README.md) | [中文](README.zh-CN.md)
 
-[![GitHub](https://img.shields.io/github/license/TacitLab/tencent-smart-advisor-daily-email-report)](LICENSE)
+[![GitHub](https://img.shields.io/github/license/TacitLab/tencent-cloud-smart-advisor-daily-email-report)](LICENSE)
 
-An OpenClaw Skill for generating intelligent daily reports from Tencent Smart Advisor (腾讯云智能顾问) emails.
+🐦‍🔥 An OpenClaw Skill for generating intelligent daily reports from Tencent Cloud Smart Advisor (腾讯云智能顾问) emails.
 
 ## Features
 
@@ -64,7 +64,7 @@ openclaw skills install summarize
 ## Report Example
 
 ```markdown
-# 📊 Tencent Smart Advisor Daily Report | 2026-02-25
+# 🐦‍🔥 Tencent Cloud Smart Advisor Daily Report | 2026-02-25
 
 ## Account: Example Corp (1234567890)
 
