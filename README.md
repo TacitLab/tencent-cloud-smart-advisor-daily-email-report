@@ -1,5 +1,7 @@
 # Tencent Smart Advisor Daily Email Report
 
+**English** | [中文](README.zh-CN.md)
+
 [![GitHub](https://img.shields.io/github/license/TacitLab/tencent-smart-advisor-daily-email-report)](LICENSE)
 
 An OpenClaw Skill for generating intelligent daily reports from Tencent Smart Advisor (腾讯云智能顾问) emails.
@@ -101,9 +103,8 @@ The system automatically extracts account names from emails. To manually overrid
 
 ## Documentation
 
-- [中文文档](README.zh-CN.md)
 - [SKILL.md](SKILL.md) — Detailed technical documentation
 
 ## License
 
-MIT
+[MIT](LICENSE)

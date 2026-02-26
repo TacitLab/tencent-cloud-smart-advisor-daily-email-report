@@ -1,5 +1,7 @@
 # 腾讯云智能顾问日报生成器
 
+[English](README.md) | **中文**
+
 [![GitHub](https://img.shields.io/github/license/TacitLab/tencent-smart-advisor-daily-email-report)](LICENSE)
 
 OpenClaw Skill，用于从腾讯云智能顾问邮件生成智能日报。
@@ -101,9 +103,8 @@ openclaw skills install summarize
 
 ## 文档
 
-- [English Documentation](README.md)
 - [SKILL.md](SKILL.md) — 详细技术文档
 
 ## 许可证
 
-MIT
+[MIT](LICENSE)
